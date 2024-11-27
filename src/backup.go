@@ -164,7 +164,7 @@ func backupDotfiles(backupDir string) error {
 	}
 
 	excludeMap := make(map[string]bool)
-	for _, file := range excludeFiles {
+	for _, file := range backupExcludeFiles {
 		excludeMap[file] = true
 	}
 

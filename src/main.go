@@ -17,8 +17,12 @@ type BackupItem struct {
 	Selected bool
 }
 
-// -e フラグで指定された除外する dotfile のリスト
-var excludeFiles []string
+var (
+	// バックアップで使用する除外ファイル群
+	backupExcludeFiles []string
+	// リストアで使用する除外ファイル群
+	restoreExcludeFiles []string
+)
 
 // ルートコマンドの定義
 var rootCmd = &cobra.Command{
@@ -65,12 +69,14 @@ var restoreCmd = &cobra.Command{
 }
 
 func init() {
-	// コマンドラインフラグとサブコマンドを設定
 	rootCmd.AddCommand(backupCmd)
 	rootCmd.AddCommand(restoreCmd)
 
-	// -e フラグの設定
-	backupCmd.Flags().StringSliceVarP(&excludeFiles, "exclude", "e", []string{}, "バックアップから除外する dotfile")
+	// backup コマンドの -e フラグ
+	backupCmd.Flags().StringSliceVarP(&backupExcludeFiles, "exclude", "e", []string{}, "バックアップから除外するdotfile")
+
+	// restore コマンドの -e フラグ
+	restoreCmd.Flags().StringSliceVarP(&restoreExcludeFiles, "exclude", "e", []string{}, "リストアから除外するdotfile")
 }
 
 func main() {

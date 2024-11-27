@@ -106,9 +106,22 @@ func restoreDotfiles(backupDir string) error {
 		return err
 	}
 
+	excludeMap := make(map[string]bool)
+	for _, file := range restoreExcludeFiles {
+		name := strings.TrimPrefix(file, ".")
+		excludeMap[name] = true
+		excludeMap["."+name] = true
+	}
+
 	homeDir := os.ExpandEnv("$HOME")
 	for _, entry := range entries {
 		name := entry.Name()
+
+		if excludeMap[name] {
+			fmt.Printf("INFO: %s はリストアから除外されました\n", name)
+			continue
+		}
+
 		srcPath := filepath.Join(dotfilesDir, name)
 		dstPath := filepath.Join(homeDir, name)
 
